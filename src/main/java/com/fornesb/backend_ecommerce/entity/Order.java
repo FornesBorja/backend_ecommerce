@@ -23,6 +23,9 @@ public class Order
     private String status;
     private Double total;
 
+    @OneToOne(mappedBy = "payment", cascade = CascadeType.ALL)
+    private Payment payment;
+
     public Order(Integer id, User user, Data orderdate, String status, Double total) {
         this.id = id;
         this.user = user;
