@@ -17,4 +17,12 @@ public class Cart
     @OneToOne
     @JoinColumn(name = "user_id", nullable =false, unique = true)
     private User user;
+
+    public Cart() {
+    }
+
+    public Cart(Integer id, User user) {
+        this.id = id;
+        this.user = user;
+    }
 }
