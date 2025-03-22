@@ -6,7 +6,6 @@ import lombok.*;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
 @Table(name = "cart_items")
@@ -26,14 +25,5 @@ public class Cart_item
 
     @Column(nullable = false)
     private Integer quantity;
-
-    public Cart_item(Integer quantity, Product product, Cart cart, Integer id) {
-        this.quantity = quantity;
-        this.product = product;
-        this.cart = cart;
-        this.id = id;
-    }
-
-    public Cart_item() {
-    }
+    
 }

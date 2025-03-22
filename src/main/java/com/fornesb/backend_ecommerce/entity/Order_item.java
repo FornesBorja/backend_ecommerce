@@ -31,15 +31,4 @@ public class Order_item
 
     @Column(nullable = false)
     private Integer price;
-
-    public Order_item(Integer price, Integer quantity, Product product, Order order, Integer id) {
-        this.price = price;
-        this.quantity = quantity;
-        this.product = product;
-        this.order = order;
-        this.id = id;
-    }
-
-    public Order_item() {
-    }
 }
