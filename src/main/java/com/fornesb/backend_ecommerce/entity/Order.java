@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -19,14 +21,14 @@ public class Order
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private Data orderdate;
+    private LocalDateTime orderdate;
     private String status;
     private Double total;
 
     @OneToOne(mappedBy = "payment", cascade = CascadeType.ALL)
     private Payment payment;
 
-    public Order(Integer id, User user, Data orderdate, String status, Double total) {
+    public Order(Integer id, User user, LocalDateTime orderdate, String status, Double total) {
         this.id = id;
         this.user = user;
         this.orderdate = orderdate;

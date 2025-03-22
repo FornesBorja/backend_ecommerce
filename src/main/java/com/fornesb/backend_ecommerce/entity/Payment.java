@@ -29,4 +29,16 @@ public class Payment
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PaymentStatus status;
+
+    public Payment(Integer id, Order order, LocalDateTime paymentDate, Double amount, String method, PaymentStatus status) {
+        this.id = id;
+        this.order = order;
+        this.paymentDate = paymentDate;
+        this.amount = amount;
+        this.method = method;
+        this.status = status;
+    }
+
+    public Payment() {
+    }
 }
