@@ -24,6 +24,9 @@ public class User
     private String phoneNumber;
     private boolean isActive;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Cart cart;
+
     public User(Integer id, String name, String email, String password, String role, String address, String phoneNumber, boolean isActive) {
         this.id = id;
         this.name = name;
@@ -33,6 +36,8 @@ public class User
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.isActive = isActive;
+
+
     }
 
     public User() {
