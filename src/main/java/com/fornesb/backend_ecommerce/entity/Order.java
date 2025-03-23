@@ -25,7 +25,7 @@ public class Order
     private String status;
     private Double total;
 
-    @OneToOne(mappedBy = "payment", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private Payment payment;
 
     public Order(Integer id, User user, LocalDateTime orderdate, String status, Double total) {
