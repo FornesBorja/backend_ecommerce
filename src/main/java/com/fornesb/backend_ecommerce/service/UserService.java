@@ -1,6 +1,7 @@
 package com.fornesb.backend_ecommerce.service;
 
 import com.fornesb.backend_ecommerce.entity.User;
+import com.fornesb.backend_ecommerce.enums.Roles;
 import com.fornesb.backend_ecommerce.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,9 +26,13 @@ public class UserService
     }
 
     public User createUser(User user) {
+        if (user.getRole() == null) {
+            user.setRole(Roles.USER);
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
+
 
     public User updateUser(Integer id, User newUserData) {
         return userRepository.findById(id)
