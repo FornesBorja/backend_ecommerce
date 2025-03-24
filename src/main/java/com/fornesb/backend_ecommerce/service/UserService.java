@@ -3,7 +3,7 @@ package com.fornesb.backend_ecommerce.service;
 import com.fornesb.backend_ecommerce.entity.User;
 import com.fornesb.backend_ecommerce.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +15,7 @@ public class UserService
     private UserRepository userRepository;
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
