@@ -57,14 +57,21 @@ public class UserService {
     }
 
     public LoginResponse authenticate(LoginRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Password or username are incorrect"));
+        User user = userRepository.findByEmail(request.getEmail());
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Password or username are incorrect");
+        if (user == null) {
+            throw new RuntimeException("Username is incorrect");
+        };
+
+        if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            System.out.println(request.getPassword());
+            System.out.println(user.getPassword());
+            throw new RuntimeException("Password is incorrect");
         }
+        String token = jwtUtil.generateToken(user.getEmail());
 
-        String token = jwtUtil.generateToken(String.valueOf(user));
-        return new LoginResponse(token);
+        return new LoginResponse(token, "Login successful");
+
     }
+
 }
