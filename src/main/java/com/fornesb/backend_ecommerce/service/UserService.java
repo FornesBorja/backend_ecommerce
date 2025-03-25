@@ -1,22 +1,29 @@
 package com.fornesb.backend_ecommerce.service;
 
+import com.fornesb.backend_ecommerce.dto.LoginRequest;
+import com.fornesb.backend_ecommerce.dto.LoginResponse;
 import com.fornesb.backend_ecommerce.entity.User;
-import com.fornesb.backend_ecommerce.enums.Roles;
 import com.fornesb.backend_ecommerce.repository.UserRepository;
+import com.fornesb.backend_ecommerce.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService
-{
+public class UserService {
+
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
@@ -26,21 +33,19 @@ public class UserService
     }
 
     public User createUser(User user) {
-        user.setRole(Roles.USER);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
-
     public User updateUser(Integer id, User newUserData) {
-        return userRepository.findById(id)
-                .map(user -> {
-                    user.setName(newUserData.getName());
-                    user.setEmail(newUserData.getEmail());
-                    user.setAddress(newUserData.getAddress());
-                    user.setPhoneNumber(newUserData.getPhoneNumber());
-                    return userRepository.save(user);
-                }).orElse(null);
+        return userRepository.findById(id).map(user -> {
+            user.setName(newUserData.getName());
+            user.setEmail(newUserData.getEmail());
+            user.setPassword(passwordEncoder.encode(newUserData.getPassword()));
+            user.setAddress(newUserData.getAddress());
+            user.setPhoneNumber(newUserData.getPhoneNumber());
+            return userRepository.save(user);
+        }).orElse(null);
     }
 
     public boolean deleteUser(Integer id) {
@@ -49,5 +54,17 @@ public class UserService
             return true;
         }
         return false;
+    }
+
+    public LoginResponse authenticate(LoginRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Password or username are incorrect"));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Password or username are incorrect");
+        }
+
+        String token = jwtUtil.generateToken(String.valueOf(user));
+        return new LoginResponse(token);
     }
 }
