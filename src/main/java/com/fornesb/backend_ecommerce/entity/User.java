@@ -1,5 +1,6 @@
 package com.fornesb.backend_ecommerce.entity;
 
+import com.fornesb.backend_ecommerce.enums.Roles;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +20,9 @@ public class User
     @Column(unique = true)
     private String email;
     private String password;
-    private String role;
+
+    @Enumerated(EnumType.STRING)
+    private Roles role = Roles.USER;
     private String address;
     private String phoneNumber;
     private boolean isActive;
@@ -32,7 +35,7 @@ public class User
         this.name = name;
         this.email = email;
         this.password = password;
-        this.role = role;
+        this.role = Roles.valueOf(role);
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.isActive = isActive;
