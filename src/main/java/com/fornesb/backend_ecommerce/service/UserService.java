@@ -3,6 +3,7 @@ package com.fornesb.backend_ecommerce.service;
 import com.fornesb.backend_ecommerce.dto.LoginRequest;
 import com.fornesb.backend_ecommerce.dto.LoginResponse;
 import com.fornesb.backend_ecommerce.entity.User;
+import com.fornesb.backend_ecommerce.enums.Roles;
 import com.fornesb.backend_ecommerce.repository.UserRepository;
 import com.fornesb.backend_ecommerce.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,24 @@ public class UserService {
     }
 
     public User createUser(User user) {
+        Roles role;
+
+        if (user.getRole() == null) {
+            user.setRole(Roles.USER);
+        }
+        String roleInput = user.getRole().name().toUpperCase();
+
+        try {
+            role = Roles.valueOf(roleInput);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Rol not valid: " + user.getRole());
+        }
+
+        if (role == Roles.ADMIN) {
+            role = Roles.USER;
+        }
+
+        user.setRole(role);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
