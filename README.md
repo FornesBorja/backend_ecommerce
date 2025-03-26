@@ -13,6 +13,7 @@ Put here a brief description of the project
     <li><a href="#endpoints">Endpoints</a></li>
     <li><a href="#future-functionalities">Future functionalities</a></li>
     <li><a href="#contributions">Contributions</a></li>
+    <li><a href="#to-improve">To improve</a></li>
     <li><a href="#webography">Webography</a></li>
     <li><a href="#development">Development</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
@@ -98,3 +99,7 @@ Put here a brief description of the project
     }
 
 ![entity-relation-diagram.png](img.png)
+
+## To improve
+⬜ In GET endpoints related to users you can't see the password of the users.
+⬜
