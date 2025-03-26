@@ -1,8 +1,11 @@
 package com.fornesb.backend_ecommerce.controller;
 
+import com.fornesb.backend_ecommerce.dto.LoginRequest;
+import com.fornesb.backend_ecommerce.dto.LoginResponse;
 import com.fornesb.backend_ecommerce.entity.User;
 import com.fornesb.backend_ecommerce.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,14 +23,20 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @GetMapping("/{id}")
-    public Optional<User> getUserById(@PathVariable Integer id) {
-        return userService.getUserById(id);
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+        return ResponseEntity.ok(userService.authenticate(request));
     }
 
     @PostMapping("/register")
     public User createUser(@RequestBody User user) {
         return userService.createUser(user);
+    }
+
+
+    @GetMapping("/{id}")
+    public Optional<User> getUserById(@PathVariable Integer id) {
+        return userService.getUserById(id);
     }
 
     @PutMapping("/{id}")
@@ -37,6 +46,6 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public String deleteUser(@PathVariable Integer id) {
-        return userService.deleteUser(id) ? "Usuario eliminado" : "Usuario no encontrado";
+        return userService.deleteUser(id) ? "User deleted" : "User not found";
     }
 }
