@@ -29,9 +29,11 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> getUserById(Integer id) {
-        return userRepository.findById(id);
+    public User getUserById(Integer id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found by id " + id));
     }
+
 
     public User createUser(User user) {
         Roles role;
@@ -87,7 +89,7 @@ public class UserService {
             System.out.println(user.getPassword());
             throw new RuntimeException("Password is incorrect");
         }
-        String token = jwtUtil.generateToken(user.getEmail());
+        String token = jwtUtil.generateToken(user);
 
         return new LoginResponse(token, "Login successful");
 
