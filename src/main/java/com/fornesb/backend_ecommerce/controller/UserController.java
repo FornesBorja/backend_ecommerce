@@ -39,9 +39,13 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable Integer id, @RequestBody User newUserData) {
-        return userService.updateUser(id, newUserData);
+    public ResponseEntity<User> updateUser(@PathVariable Integer id,
+                                           @RequestBody User newUserData,
+                                           @RequestHeader("Authorization") String token) {
+        token = token.replace("Bearer ", "");
+        return ResponseEntity.ok(userService.updateUser(id, newUserData, token));
     }
+
 
     @DeleteMapping("/{id}")
     public String deleteUser(@PathVariable Integer id) {
