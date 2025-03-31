@@ -1,6 +1,7 @@
 package com.fornesb.backend_ecommerce.security;
 
 import com.fornesb.backend_ecommerce.entity.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +18,7 @@ public class JwtUtil {
     public String generateToken(User user) {
         return Jwts.builder()
                 .setSubject(user.getEmail())
-                .claim("role", user.getRole())
+                .claim("role", user.getRole().name())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour expiration
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
@@ -26,12 +27,16 @@ public class JwtUtil {
 
 
     public String extractUsername(String token) {
-        return Jwts.parserBuilder()
+        Claims claims = Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY)
                 .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
+
+        String role = claims.get("role", String.class);
+        System.out.println("Role: " + role);
+
+        return claims.getSubject();
     }
 
     public boolean isTokenExpired(String token) {
