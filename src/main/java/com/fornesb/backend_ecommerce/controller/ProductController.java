@@ -1,16 +1,21 @@
 package com.fornesb.backend_ecommerce.controller;
 
-import com.fornesb.backend_ecommerce.repository.ProductRepository;
+import com.fornesb.backend_ecommerce.entity.Product;
+import com.fornesb.backend_ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/products")
 public class ProductController {
 
     @Autowired
-    private ProductRepository productRepository;
+    private ProductService productService;
 
-
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/")
+    public Product createProduct(@RequestBody Product product) {
+        return productService.createProduct(product);
+    }
 }

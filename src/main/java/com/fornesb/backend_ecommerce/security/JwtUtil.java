@@ -32,10 +32,6 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-
-        String role = claims.get("role", String.class);
-        System.out.println("Role: " + role);
-
         return claims.getSubject();
     }
 
