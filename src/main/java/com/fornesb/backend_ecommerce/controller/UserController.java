@@ -5,7 +5,9 @@ import com.fornesb.backend_ecommerce.dto.LoginResponse;
 import com.fornesb.backend_ecommerce.entity.User;
 import com.fornesb.backend_ecommerce.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,11 +19,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
-    @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
-    }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
@@ -35,17 +32,28 @@ public class UserController {
 
 
     @GetMapping("/{id}")
-    public Optional<User> getUserById(@PathVariable Integer id) {
+    public User getUserById(@PathVariable Integer id) {
         return userService.getUserById(id);
+    }
+    @GetMapping ("/all")
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable Integer id, @RequestBody User newUserData) {
-        return userService.updateUser(id, newUserData);
+    public ResponseEntity<User> updateUser(@PathVariable Integer id,
+                                           @RequestBody User newUserData,
+                                           @RequestHeader("Authorization") String token) {
+        token = token.replace("Bearer ", "");
+        return ResponseEntity.ok(userService.updateUser(id, newUserData));
     }
 
-    @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable Integer id) {
-        return userService.deleteUser(id) ? "User deleted" : "User not found";
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @DeleteMapping("/admin/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Integer id) {
+        if (userService.deleteUser(id)) {
+            return ResponseEntity.ok("User deleted successfully.");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
     }
 }

@@ -29,9 +29,11 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> getUserById(Integer id) {
-        return userRepository.findById(id);
+    public User getUserById(Integer id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found by id " + id));
     }
+
 
     public User createUser(User user) {
         Roles role;
@@ -58,14 +60,26 @@ public class UserService {
 
     public User updateUser(Integer id, User newUserData) {
         return userRepository.findById(id).map(user -> {
-            user.setName(newUserData.getName());
-            user.setEmail(newUserData.getEmail());
-            user.setPassword(passwordEncoder.encode(newUserData.getPassword()));
-            user.setAddress(newUserData.getAddress());
-            user.setPhoneNumber(newUserData.getPhoneNumber());
+            if (newUserData.getName() != null) {
+                user.setName(newUserData.getName());
+            }
+            if (newUserData.getEmail() != null) {
+                user.setEmail(newUserData.getEmail());
+            }
+            if (newUserData.getPassword() != null && !newUserData.getPassword().isEmpty()) {
+                user.setPassword(passwordEncoder.encode(newUserData.getPassword()));
+            }
+            if (newUserData.getAddress() != null) {
+                user.setAddress(newUserData.getAddress());
+            }
+            if (newUserData.getPhoneNumber() != null) {
+                user.setPhoneNumber(newUserData.getPhoneNumber());
+            }
             return userRepository.save(user);
-        }).orElse(null);
+        }).orElseThrow(() -> new RuntimeException("User not found"));
     }
+
+
 
     public boolean deleteUser(Integer id) {
         if (userRepository.existsById(id)) {
@@ -76,18 +90,18 @@ public class UserService {
     }
 
     public LoginResponse authenticate(LoginRequest request) {
-        User user = userRepository.findByEmail(request.getEmail());
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
+        String password = user.getPassword();
         if (user == null) {
             throw new RuntimeException("Username is incorrect");
         };
 
-        if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            System.out.println(request.getPassword());
-            System.out.println(user.getPassword());
+        if (passwordEncoder.matches(request.getPassword(), password)) {
             throw new RuntimeException("Password is incorrect");
         }
-        String token = jwtUtil.generateToken(user.getEmail());
+        String token = jwtUtil.generateToken(user);
 
         return new LoginResponse(token, "Login successful");
 

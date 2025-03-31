@@ -1,5 +1,6 @@
 package com.fornesb.backend_ecommerce.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fornesb.backend_ecommerce.enums.Roles;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -19,8 +20,11 @@ public class User
     private String name;
     @Column(unique = true)
     private String email;
+
     private String password;
 
+    @Setter
+    @Getter
     @Enumerated(EnumType.STRING)
     private Roles role = Roles.USER;
     private String address;
