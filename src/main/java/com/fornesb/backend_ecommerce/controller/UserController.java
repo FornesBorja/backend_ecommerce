@@ -43,7 +43,7 @@ public class UserController {
                                            @RequestBody User newUserData,
                                            @RequestHeader("Authorization") String token) {
         token = token.replace("Bearer ", "");
-        return ResponseEntity.ok(userService.updateUser(id, newUserData, token));
+        return ResponseEntity.ok(userService.updateUser(id, newUserData));
     }
 
 
