@@ -3,6 +3,7 @@ package com.fornesb.backend_ecommerce.controller;
 import com.fornesb.backend_ecommerce.entity.Product;
 import com.fornesb.backend_ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -38,4 +39,12 @@ public class ProductController {
         return productService.updateProduct(id, updatedProduct);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteProduct(@PathVariable Integer id) {
+        if (productService.deleteProduct(id)) {
+            return ResponseEntity.ok("Product deleted successfully.");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+    }
 }
