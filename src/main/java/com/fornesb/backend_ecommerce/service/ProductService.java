@@ -1,6 +1,7 @@
 package com.fornesb.backend_ecommerce.service;
 
 import com.fornesb.backend_ecommerce.entity.Product;
+import com.fornesb.backend_ecommerce.entity.User;
 import com.fornesb.backend_ecommerce.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,4 +20,31 @@ public class ProductService {
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
+
+    public Product getProductById(Integer id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found by id " + id));
+    }
+
+    public Product updateProduct(Integer id, Product updatedProduct) {
+        return productRepository.findById(id).map(existingProduct -> {
+            if (updatedProduct.getName() != null) {
+                existingProduct.setName(updatedProduct.getName());
+            }
+            if (updatedProduct.getDescription() != null) {
+                existingProduct.setDescription(updatedProduct.getDescription());
+            }
+            if (updatedProduct.getPrice() != null) {
+                existingProduct.setPrice(updatedProduct.getPrice());
+            }
+            if (updatedProduct.getStock() != null) {
+                existingProduct.setStock(updatedProduct.getStock());
+            }
+            if (updatedProduct.getImageUrl() != null) {
+                existingProduct.setImageUrl(updatedProduct.getImageUrl());
+            }
+            return productRepository.save(existingProduct);
+        }).orElseThrow(() -> new RuntimeException("Product not found with ID: " + id));
+    }
+
 }

@@ -3,6 +3,7 @@ package com.fornesb.backend_ecommerce.controller;
 import com.fornesb.backend_ecommerce.entity.Product;
 import com.fornesb.backend_ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,4 +26,16 @@ public class ProductController {
     public List<Product> getAllProduct() {
         return productService.getAllProducts();
     }
+
+    @GetMapping("/{id}")
+    public Product getProductById(@PathVariable Integer id) {
+        return productService.getProductById(id);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/{id}")
+    public Product updateProduct(@PathVariable Integer id, @RequestBody Product updatedProduct) {
+        return productService.updateProduct(id, updatedProduct);
+    }
+
 }
